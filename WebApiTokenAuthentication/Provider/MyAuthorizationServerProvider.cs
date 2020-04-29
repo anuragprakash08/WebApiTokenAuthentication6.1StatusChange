@@ -46,22 +46,21 @@ namespace WebApiTokenAuthentication
                 context.Rejected();
             }
 
-            //string resource = context.Parameters.Where(x => x.Key == "resource").Select(y => y.Value).FirstOrDefault()[0];
-            //if (resource == ConfigurationManager.AppSettings["resource"].ToString())
-            //{
-            //    context.Validated(clientId);
-            //}
-            //else
-            //{
-            //    context.SetError("invalid_Resource", "Resource credentials are invalid.");
-            //    context.Rejected();
-            //}
-
+            string resource = context.Parameters.Where(x => x.Key == "resource").Select(y => y.Value).FirstOrDefault()[0];
+            if (resource == ConfigurationManager.AppSettings["resource"].ToString())
+            {
+                context.Validated(clientId);
+            }
+            else
+            {
+                context.SetError("invalid_Resource", "Resource credentials are invalid.");
+                context.Rejected();
+            }
 
             return;
         }
 
-        public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        public override async Task GrantClientCredentials(OAuthGrantClientCredentialsContext context)
         {
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
             context.Validated(identity);

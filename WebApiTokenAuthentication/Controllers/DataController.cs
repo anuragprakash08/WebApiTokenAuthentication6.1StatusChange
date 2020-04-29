@@ -19,6 +19,13 @@ namespace WebApiTokenAuthentication.Controllers
         public IHttpActionResult GetForAuthenticate()
         {
             return Ok("Hello Anurag");
-        }      
+        }
+
+        [HttpPost]
+        [Route("api/data/APIVoucherUpdateControl")]
+        public IHttpActionResult APIVoucherUpdateControl([FromBody] APIVoucherUpdateControls dto)
+        {
+            return Ok("Hello Anurag");
+        }
     }
 }
