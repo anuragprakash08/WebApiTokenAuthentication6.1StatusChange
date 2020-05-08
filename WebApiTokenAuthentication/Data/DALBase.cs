@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using WebApiTokenAuthentication.Models;
 
 namespace WebApiTokenAuthentication.Data
 {
@@ -16,5 +17,9 @@ namespace WebApiTokenAuthentication.Data
         }
 
         public System.Data.Entity.DbSet<APIVoucherUpdateControls> APIVoucherUpdateControls { get; set; }
+        public System.Data.Entity.DbSet<BO_PAYABLES> BO_PAYABLES { get; set; }
+
+        public System.Data.Entity.DbSet<BO_RECEIVABLES> BO_RECEIVABLES { get; set; }
+
     }
 }

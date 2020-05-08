@@ -29,7 +29,7 @@ namespace WebApiTokenAuthentication
         public decimal posteddebitamount { get; set; }
         public string postingnumber { get; set; } = string.Empty;
         public string postingbankaccount { get; set; } = string.Empty;
-        public string IsDataValid { get; set; } = string.Empty;
+        public string IsDataValid { get; set; } = "N";
         public string VoucherStatus { get; set; } = "N";
         public string PAYorREC { get; set; } = string.Empty;
         public string PayablesID_ReceivablesID { get; set; } = string.Empty;
