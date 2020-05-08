@@ -1,5 +1,8 @@
-﻿using System.Web;
+﻿using System.Net;
+using System.Net.Http;
+using System.Web;
 using System.Web.Http.Controllers;
+using WebApiTokenAuthentication.Models;
 
 namespace WebApiTokenAuthentication
 {
@@ -9,10 +12,19 @@ namespace WebApiTokenAuthentication
         protected override void HandleUnauthorizedRequest(HttpActionContext actionContext)
         {
             if (!HttpContext.Current.User.Identity.IsAuthenticated)
-                base.HandleUnauthorizedRequest(actionContext);
+            {
+                //create custom response
+                actionContext.Response = actionContext.Request.CreateResponse(
+                    HttpStatusCode.Unauthorized,
+                    new ResponseStatus() { status = "401", message = "Authorization has been denied for this request." }
+                );
+            }
             else
             {
-                actionContext.Response = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.Forbidden);
+                actionContext.Response = actionContext.Request.CreateResponse(
+                    HttpStatusCode.Forbidden,
+                    new ResponseStatus() { status = "403", message = "Forbidden" }
+                );
             }
         }
     }

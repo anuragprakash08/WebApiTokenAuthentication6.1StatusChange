@@ -21,8 +21,8 @@ namespace WebApiTokenAuthentication
 
             if (context.ClientId == null)
             {
-                context.SetError("invalid_client", "Client credentials could not be retrieved through the Authorization header.");
                 context.Rejected();
+                context.SetError("invalid_client", "Client credentials could not be retrieved through the Authorization header.");
 
                 return;
             }
@@ -35,26 +35,30 @@ namespace WebApiTokenAuthentication
                 }
                 else
                 {
-                    context.SetError("invalid_client", "Client credentials are invalid.");
                     context.Rejected();
+                    context.SetError("invalid_client", "Client credentials are invalid.");
                 }
             }
             catch (Exception ex)
             {
                 string errorMessage = ex.Message;
-                context.SetError("server_error");
                 context.Rejected();
+                context.SetError("server_error");
             }
 
             string resource = context.Parameters.Where(x => x.Key == "resource").Select(y => y.Value).FirstOrDefault()[0];
-            if (resource == ConfigurationManager.AppSettings["resource"].ToString())
+            if (resource == ConfigurationManager.AppSettings["resource"].ToString() && context.IsValidated)
             {
                 context.Validated(clientId);
             }
             else
             {
-                context.SetError("invalid_Resource", "Resource credentials are invalid.");
-                context.Rejected();
+                if(context.IsValidated)
+                {
+                    context.Rejected();
+                    context.SetError("invalid_Resource", "Resource credentials are invalid.");
+                }
+
             }
 
             return;
