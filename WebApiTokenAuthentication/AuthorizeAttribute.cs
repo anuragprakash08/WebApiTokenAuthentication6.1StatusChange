@@ -13,6 +13,7 @@ namespace WebApiTokenAuthentication
         {
             if (!HttpContext.Current.User.Identity.IsAuthenticated)
             {
+                EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "PostAPIVoucherUpdateControl", EventLogger.Event.START, "Authorization has been denied for this request. :");
                 //create custom response
                 actionContext.Response = actionContext.Request.CreateResponse(
                     HttpStatusCode.Unauthorized,
@@ -21,6 +22,7 @@ namespace WebApiTokenAuthentication
             }
             else
             {
+                EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "PostAPIVoucherUpdateControl", EventLogger.Event.START, "Forbidden :");
                 actionContext.Response = actionContext.Request.CreateResponse(
                     HttpStatusCode.Forbidden,
                     new ResponseStatus() { status = "403", message = "Forbidden" }

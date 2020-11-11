@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApiTokenAuthentication.Models;
 
 namespace WebApiTokenAuthentication
 {
@@ -11,6 +12,7 @@ namespace WebApiTokenAuthentication
     {
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
+            EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "ValidateClientAuthentication", EventLogger.Event.START, "ValidateClientAuthentication method called :");
             string clientId = string.Empty;
             string clientSecret = string.Empty;
 
@@ -60,7 +62,7 @@ namespace WebApiTokenAuthentication
                 }
 
             }
-
+            EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "ValidateClientAuthentication", EventLogger.Event.END, "ValidateClientAuthentication method called :");
             return;
         }
 
