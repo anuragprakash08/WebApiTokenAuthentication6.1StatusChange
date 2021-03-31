@@ -6,6 +6,7 @@ using WebApiTokenAuthentication.Data;
 using WebApiTokenAuthentication.Models;
 using System.Linq;
 using System;
+using System.Configuration;
 
 namespace WebApiTokenAuthentication.Controllers
 {
@@ -25,22 +26,41 @@ namespace WebApiTokenAuthentication.Controllers
                 if (!ModelState.IsValid)
                 {
                     //return BadRequest(ModelState);
-                    return Ok(new ResponseStatus() { status = "400", message = "Bad Request" });
+                    return Ok(new ResponseStatus() { status = "400", message = "documentnumber or invoicenumber missing in request body" });
                 }
 
                 EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "PostAPIVoucherUpdateControl", EventLogger.Event.START, "PostAPIVoucherUpdateControl method called :" + dto.documentnumber + "," + dto.invoicenumber);
                 APIVoucherUpdateControls dtoToBeSaved = db.APIVoucherUpdateControls.Find(dto.documentnumber, dto.invoicenumber);
                 EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "PostAPIVoucherUpdateControl", EventLogger.Event.END, "PostAPIVoucherUpdateControl method called :" + dto.documentnumber + "," + dto.invoicenumber);
 
+                string separator = ConfigurationManager.AppSettings["Separator"].ToString();
                 string tran_id = dto.documentnumber;
-                string payables_id = dto.invoicenumber.Split('_')[0];
-                string part_srl_id = dto.invoicenumber.Split('_')[1];
+                string payables_id = dto.invoicenumber.Split(separator[0])[0];
+                string part_srl_id = dto.invoicenumber.Split(separator[0])[1];
 
                 var dbDtoPayaBles = (from records in db.BO_PAYABLES select records).Where(y => y.TRAN_ID == tran_id && y.PAYABLES_ID == payables_id && y.PART_SRL_ID == part_srl_id).FirstOrDefault();
                 var dbDtoReceivables = (from records in db.BO_RECEIVABLES select records).Where(y => y.TRAN_ID == tran_id && y.RECEIVABLES_ID == payables_id && y.PART_SRL_ID == part_srl_id).FirstOrDefault();
 
                 if (dbDtoPayaBles != null || dbDtoReceivables != null)
                     dto.IsDataValid = "Y";
+
+
+                if (dbDtoPayaBles != null)
+                {
+                    dto.PAYorREC = "PAY";
+                    dto.PayablesID_ReceivablesID = dbDtoPayaBles.PAYABLES_ID;
+                    dto.PartSrlNo = dbDtoPayaBles.PART_SRL_ID;
+                    dto.TranID = dbDtoPayaBles.TRAN_ID;
+                    dto.TranType = dbDtoPayaBles.TRAN_TYPE;
+                }
+                if (dbDtoReceivables != null)
+                {
+                    dto.PAYorREC = "REC";
+                    dto.PayablesID_ReceivablesID = dbDtoReceivables.RECEIVABLES_ID;
+                    dto.PartSrlNo = dbDtoReceivables.PART_SRL_ID;
+                    dto.TranID = dbDtoReceivables.TRAN_ID;
+                    dto.TranType = dbDtoReceivables.TRAN_TYPE;
+                }
 
                 if (dtoToBeSaved != null)
                 {
@@ -60,16 +80,18 @@ namespace WebApiTokenAuthentication.Controllers
                 {
                     throw ex;
                 }
+                if (dbDtoPayaBles == null && dbDtoReceivables == null)
+                return Ok(new ResponseStatus() { status = "501", message = "Key data is not present in BO_PAYABLES & BO_RECEIVABLES" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "Exception", EventLogger.Event.END, "PostAPIVoucherUpdateControl method called :" + ex.Message);
-                return Ok(new ResponseStatus() { status = "404", message = "DB exception has occured" });
+                return Ok(new ResponseStatus() { status = "500", message = "DB connection failed" });
             }
 
             EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "PostAPIVoucherUpdateControl", EventLogger.Event.END, "PostAPIVoucherUpdateControl method called :");
-
             return Ok(new ResponseStatus() { status = "200", message = "Voucher Updated Successfully" });
+
         }
 
         protected override void Dispose(bool disposing)
