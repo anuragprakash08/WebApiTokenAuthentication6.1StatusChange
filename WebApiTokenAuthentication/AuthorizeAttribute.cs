@@ -17,7 +17,7 @@ namespace WebApiTokenAuthentication
                 //create custom response
                 actionContext.Response = actionContext.Request.CreateResponse(
                     HttpStatusCode.Unauthorized,
-                    new ResponseStatus() { status = "401", message = "Authorization has been denied for this request." }
+                    new AuthResponseStatus() { status = "401", message = "Authorization has been denied for this request." }
                 );
             }
             else
@@ -25,7 +25,7 @@ namespace WebApiTokenAuthentication
                 EventLogger.Log("APIVoucherUpdate.PostAPIVoucherUpdateControl", "PostAPIVoucherUpdateControl", EventLogger.Event.START, "Forbidden :");
                 actionContext.Response = actionContext.Request.CreateResponse(
                     HttpStatusCode.Forbidden,
-                    new ResponseStatus() { status = "403", message = "Forbidden" }
+                    new AuthResponseStatus() { status = "403", message = "Forbidden" }
                 );
             }
         }

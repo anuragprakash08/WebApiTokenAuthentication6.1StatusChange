@@ -2,11 +2,10 @@
 
 namespace WebApiTokenAuthentication.Models
 {
-    public class ResponseStatus
+    public class AuthResponseStatus
     {
         public string status { get; set; }
         public string message { get; set; }
-
     }
 
 }

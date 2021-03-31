@@ -202,6 +202,8 @@
     <Compile Include="Models\EventLogger.cs" />
     <Compile Include="Models\BO_PAYABLES.cs" />
     <Compile Include="Models\BO_RECEIVABLES.cs" />
+    <Compile Include="Models\AuthResponseStatus.cs" />
+    <Compile Include="Models\ResponseListStatus.cs" />
     <Compile Include="Models\ResponseStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\MyAuthorizationServerProvider.cs" />
